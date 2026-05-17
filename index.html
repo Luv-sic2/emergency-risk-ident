@@ -3,121 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>校园安全风险AI全真识别指挥调度系统</title>
+    <title>校园安全风险AI全真视觉识别与智能应急决策系统</title>
     <style>
-        :root { --primary: #ef4444; --accent: #38bdf8; --bg: #090d16; --card: #141b2d; --border: #1e293b; --text: #e2e8f0; --text-muted: #64748b; }
-        
-        body { margin:0; padding:0; background: var(--bg); font-family: 'SF Pro Display', -apple-system, 'PingFang SC', sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
-        
-        /* 通用科技风容器 */
-        .container { width:95%; max-width:1400px; margin:20px auto; display: flex; flex-direction: column; gap: 20px; }
-        
-        /* 1. 顶部标题栏 COMMAND HEADER */
-        .header { background: var(--card); border: 1px solid var(--border); padding: 15px 30px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .header h1 { color: var(--accent); margin: 0; font-size: 22px; letter-spacing: 1px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .header .live-badge { background: rgba(56,189,248,0.1); color: var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 12px; border: 1px solid rgba(56,189,248,0.2); font-family: monospace; letter-spacing: 1px; animation: pulse 2s infinite; }
-        
-        /* 2. 核心区布局 MAIN LAYOUT */
-        .main-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 900px) { .main-grid { grid-template-columns: 380px 1fr; } }
-        
-        /* 通用面板风格 PANEL STYLE */
-        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; box-sizing: border-box; }
-        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .panel-title { font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
-        
-        /* 左侧：视觉采集面板 VISUAL ACQUISITION */
-        #upload-panel { gap: 15px; }
-        
-        /* 高科技图片采集框 */
-        .scan-zone { position: relative; border: 2px dashed #334155; border-radius: 12px; min-height: 250px; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: 0.3s; background: rgba(15,23,42,0.3); }
-        .scan-zone:hover { border-color: var(--accent); background: rgba(56,189,248,0.02); }
-        .scan-zone input[type="file"] { position: absolute; width: 100%; height: 100%; top:0; left:0; opacity: 0; cursor: pointer; }
-        
-        #preview-img { display: none; width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        
-        /* 上传占位 UI */
-        .upload-placeholder { text-align: center; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .upload-placeholder .icon { font-size: 40px; color: #334155; }
-        .scan-zone:hover .icon { color: var(--accent); }
-        
-        /* 警报分析按钮 */
-        .btn-analyze { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; letter-spacing: 1px; box-shadow: 0 4px 14px rgba(239,68,68,0.4); display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-analyze:hover { background: #dc2626; transform: translateY(-1px); }
-        .btn-analyze:disabled { background: #334155; color: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none; }
-        
-        /* 右侧：报告推演面板 LOGIC DEDUCTION */
-        #report-panel { min-height: 500px; }
-        
-        /* 高科技报告显示区 */
-        #result-area { display: none; }
-        #result-text { background: #070a12; padding: 30px; border-radius: 8px; border: 1px solid var(--border); color: #cbd5e1; line-height: 1.8; font-size: 15px; white-space: pre-wrap; font-family: 'Consolas', 'Monaco', 'PingFang SC', sans-serif; position: relative; overflow-x: auto; }
-        
-        /* 报告区域的伪元素光效 */
-        #result-text::before { content: ""; position: absolute; top:0; left:0; width:4px; height: 100%; background: var(--accent); border-radius: 4px; }
-        
-        /* 正在解算占位 */
-        #report-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; flex:1; text-align: center; color: var(--text-muted); font-size: 14px; gap: 15px; }
-        .scan-bar { width: 150px; height: 2px; background: #334155; position: relative; overflow: hidden; }
-        .scan-bar::after { content: ""; position: absolute; left: 0; top:0; width: 50%; height: 100%; background: var(--accent); animation: scanLoop 1.5s infinite; }
+        :root {
+            --bg: #0b0f19; /* 深钛灰色背景，大厂数字孪生系统标准底色 */
+            --panel: #111827; /* 晶体暗卡片颜色 */
+            --panel-header: #1f2937; /* 卡片头部清爽分栏 */
+            --border: rgba(255, 255, 255, 0.05); /* 极细微光边框 */
+            --border-hover: rgba(56, 189, 248, 0.3); /* 鼠标悬停时的科技蓝微光 */
+            --accent-blue: #0284c7; /* 极客深邃蓝：主动作键 */
+            --accent-blue-hover: #0369a1;
+            --accent-orange: #f59e0b; /* 预警琥珀橙：应急管理专业标准提示色 */
+            --text-main: #f3f4f6; /* 柔和白，长时间观看眼不瞎 */
+            --text-muted: #9ca3af; /* 灰白文字 */
+        }
 
-        @keyframes scanLoop { from { left: -50%; } to { left: 100%; } }
-        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        body {
+            margin: 0; padding: 0; background: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            color: var(--text-main); -webkit-font-smoothing: antialiased;
+            min-height: 100vh; display: flex; flex-direction: column;
+        }
 
+        /* 响应式黄金双栏布局 */
+        .app-container {
+            width: 100%; max-width: 1300px; margin: 0 auto; padding: 32px 20px;
+            box-sizing: border-box; display: flex; flex-direction: column; gap: 24px; flex: 1;
+        }
+
+        /* 大厂扁平化极简导航 */
+        .app-header {
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border); padding-bottom: 20px;
+        }
+        .app-header .brand {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .app-header .brand-indicator {
+            width: 6px; height: 6px; background: var(--accent-orange); border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-orange); animation: statusPulse 2s infinite;
+        }
+        .app-header h1 {
+            margin: 0; font-size: 16px; font-weight: 600; letter-spacing: 2px;
+            color: var(--text-main);
+        }
+        .app-header .system-status {
+            font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;
+        }
+
+        /* 主工作区 Bento 现代网格布局 */
+        .workbench-grid {
+            display: grid; grid-template-columns: 1fr; gap: 24px; flex: 1;
+        }
+        @media (min-width: 960px) {
+            .workbench-grid { grid-template-columns: 400px 1fr; }
+        }
+
+        /* 晶体质感卡片面板 */
+        .glass-panel {
+            background: var(--panel); border: 1px solid var(--border);
+            border-radius: 12px; padding: 0; display: flex; flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); overflow: hidden; transition: border 0.3s ease;
+        }
+        .panel-inner {
+            padding: 24px; display: flex; flex-direction: column; flex: 1;
+        }
+
+        /* 卡片内部分块标题 */
+        .panel-caption {
+            font-size: 12px; font-weight: 600; color: var(--text-muted);
+            letter-spacing: 1.5px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+            border-left: 3px solid var(--accent-blue); padding-left: 8px;
+        }
+
+        /* 隐藏式全真图片采集窗 */
+        .capture-viewport {
+            width: 100%; height: 260px; position: relative; border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 8px; background: rgba(0, 0, 0, 0.15); transition: all 0.3s ease;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .capture-viewport:hover {
+            border-color: var(--border-hover); background: rgba(255, 255, 255, 0.01);
+        }
+        .capture-viewport input[type="file"] {
+            position: absolute; width: 100%; height: 100%; top:0; left:0; opacity: 0; cursor: pointer; z-index: 10;
+        }
+        
+        #preview-img {
+            width: 100%; height: 100%; object-fit: contain; display: none;
+            position: relative; z-index: 5; background: #000;
+        }
+
+        /* 极简无土气准心引导 */
+        .viewport-guide {
+            text-align: center; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .viewport-guide .crosshair {
+            width: 24px; height: 24px; border: 1px solid var(--text-muted); opacity: 0.2;
+            margin: 0 auto 16px auto; position: relative;
+        }
+        .viewport-guide .crosshair::before, .viewport-guide .crosshair::after {
+            content: ''; position: absolute; background: var(--text-muted);
+        }
+        .viewport-guide .crosshair::before { top: 50%; left: 3px; right: 3px; height: 1px; }
+        .viewport-guide .crosshair::after { left: 50%; top: 3px; bottom: 3px; width: 1px; }
+        .viewport-guide p { margin: 4px 0; font-size: 13px; color: var(--text-muted); }
+
+        /* 扁平微光工业控制键 */
+        .btn-execution {
+            background: var(--accent-blue); color: #fff; border: none;
+            padding: 14px; border-radius: 6px; font-size: 14px; font-weight: 500; letter-spacing: 1px;
+            cursor: pointer; width: 100%; margin-top: auto; transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+        }
+        .btn-execution:hover {
+            background: var(--accent-blue-hover);
+        }
+        .btn-execution:disabled {
+            background: #1f2937; color: var(--text-muted); cursor: not-allowed; box-shadow: none;
+        }
+
+        /* 右侧决策展示面板 */
+        .deduction-display {
+            flex: 1; display: flex; flex-direction: column; min-height: 480px;
+        }
+
+        /* 大厂同款骨架屏动态解算特效 */
+        .skeleton-wrapper {
+            display: none; flex-direction: column; gap: 14px; width: 100%; padding-top: 4px;
+        }
+        .skeleton-line {
+            height: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 3px; position: relative; overflow: hidden;
+        }
+        .skeleton-line::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: skeletonShimmer 1.5s infinite;
+        }
+
+        /* 决策报告高级文本渲染区 */
+        #result-area {
+            display: none; flex: 1; width: 100%;
+        }
+        #result-text {
+            color: rgba(243, 244, 246, 0.95); line-height: 1.8; font-size: 14.5px;
+            white-space: pre-wrap; font-family: -apple-system, sans-serif;
+        }
+
+        /* 静态待命展示状态 */
+        #idle-state {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            flex: 1; color: var(--text-muted); font-size: 13px; text-align: center; gap: 8px;
+        }
+
+        /* 呼吸与扫描动画 */
+        @keyframes skeletonShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes statusPulse {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        .footer {
+            margin-top: auto; border-top: 1px solid var(--border); padding-top: 20px;
+            text-align: center; color: var(--text-muted); font-size: 11px; letter-spacing: 0.5px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="app-container">
         
-        <header class="header">
-            <h1>🚨 CAMPUS SAFETY AI CENTER</h1>
-            <div class="live-badge">LIVE // MULTIMODAL NODE</div>
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-indicator"></div>
+                <h1>校园安全风险 AI 视觉解析与决策系统</h1>
+            </div>
+            <div class="system-status">当前节点 // 智能视觉分析就绪</div>
         </header>
 
-        <div class="main-grid">
+        <div class="workbench-grid">
             
-            <aside class="panel" id="upload-panel">
-                <div class="panel-header">
-                    <span class="panel-title">Visual Acquisition</span>
-                </div>
-                
-                <div class="scan-zone">
-                    <input type="file" id="file-input" accept="image/*">
-                    <div class="upload-placeholder" id="placeholder-ui">
-                        <div class="icon">📸</div>
-                        <div style="font-size: 15px; color: var(--text);">视界载入点</div>
-                        <div style="font-size: 12px;">点击选择或拖拽现场照片</div>
+            <section class="glass-panel">
+                <div class="panel-inner">
+                    <div class="panel-caption">01 / 现场画面采集仓</div>
+                    
+                    <div class="capture-viewport">
+                        <input type="file" id="file-input" accept="image/*">
+                        <div class="viewport-guide" id="placeholder-ui">
+                            <div class="crosshair"></div>
+                            <p>载入实物图像流</p>
+                            <p style="font-size: 11px; opacity: 0.5;">点击或将校园现场照片拖拽至此</p>
+                        </div>
+                        <img id="preview-img" src="#" alt="解算流数据预览">
                     </div>
-                    <img id="preview-img" src="#" alt="视觉流预览">
+                    
+                    <button class="btn-execution" id="start-btn" style="margin-top: 24px;">启动多模态风险推理</button>
                 </div>
-                
-                <button class="btn-analyze" id="start-btn">⚠️ 启动视觉解算推理</button>
-            </aside>
+            </section>
             
-            <main class="panel" id="report-panel">
-                <div class="panel-header">
-                    <span class="panel-title">AI Logic Deduction</span>
-                </div>
-                
-                <div id="report-placeholder">
-                    <div class="icon" style="font-size: 30px;">🕵️‍♂️</div>
-                    <div>上传现场视觉数据<br>激活应急管理 AI 推理节点</div>
-                </div>
-                
-                <div id="loading-placeholder" style="display: none;">
-                    <div id="report-placeholder">
-                        <div class="scan-bar"></div>
-                        <div>正在提取图像高维特征...<br>呼叫国内视觉节点进行全真风险解算</div>
+            <section class="glass-panel deduction-display">
+                <div class="panel-inner" style="flex: 1; display: flex; flex-direction: column;">
+                    <div class="panel-caption">02 / AI 智能风险解算中心</div>
+                    
+                    <div id="idle-state">
+                        <div style="font-weight: 400; opacity: 0.6; font-size: 14px;">等待接收图像数据</div>
+                        <div style="font-size: 12px; opacity: 0.4;">请在左侧面板载入现场图像后触发智能解算</div>
                     </div>
-                </div>
+                    
+                    <div class="skeleton-wrapper" id="skeleton-loading">
+                        <div class="skeleton-line" style="width: 30%"></div>
+                        <div class="skeleton-line" style="width: 85%; margin-top: 10px;"></div>
+                        <div class="skeleton-line" style="width: 90%"></div>
+                        <div class="skeleton-line" style="width: 65%"></div>
+                        <div class="skeleton-line" style="width: 45%; margin-top: 10px;"></div>
+                        <div class="skeleton-line" style="width: 75%"></div>
+                    </div>
 
-                <div id="result-area">
-                    <div id="result-text"></div>
+                    <div id="result-area">
+                        <div id="result-text"></div>
+                    </div>
                 </div>
-            </main>
+            </section>
 
         </div>
+
+        <footer class="footer">
+            应急管理数字化课题演示系统 // 具备全真多模态 CV 隐患排查能力
+        </footer>
     </div>
 
     <script>
@@ -126,14 +242,14 @@
         const placeholderUi = document.getElementById('placeholder-ui');
         const btn = document.getElementById('start-btn');
         
-        const placeholderRep = document.getElementById('report-placeholder');
-        const loadingRep = document.getElementById('loading-placeholder');
+        const idleState = document.getElementById('idle-state');
+        const skeletonLoading = document.getElementById('skeleton-loading');
         const resultArea = document.getElementById('result-area');
         const resultText = document.getElementById('result-text');
 
         let base64Data = ""; 
 
-        // 核心流程：1. 载入预览图片 (和现在一样)
+        // 核心流程 1：捕获图片预览 (和现在一样)
         fileInput.onchange = function() {
             const file = fileInput.files[0];
             if (file) {
@@ -141,15 +257,15 @@
                 reader.onload = function(e) {
                     previewImg.src = e.target.result;
                     previewImg.style.display = "block";
-                    placeholderUi.style.display = "none"; // 隐藏占位框
-                    // 强力提取干净的 base64 字符串
+                    placeholderUi.style.opacity = "0";
+                    setTimeout(() => { placeholderUi.style.display = "none"; }, 200);
                     base64Data = e.target.result.split(',')[1];
                 };
                 reader.readAsDataURL(file);
             }
         };
 
-        // 核心流程：3. 动效与请求
+        // 核心流程 2：流畅打字机动效
         function startTypingEffect(text) {
             let i = 0;
             resultText.innerText = "";
@@ -159,26 +275,25 @@
                 if (i >= text.length) {
                     clearInterval(timer);
                     btn.disabled = false;
-                    btn.innerText = "重新分析新场景";
+                    btn.innerText = "重新执行风险推理";
                 }
-                // 自动向下滚动，更有黑客感
-                resultArea.scrollIntoView({ behavior: "smooth", block: "end" });
-            }, 8);
+            }, 6); 
         }
 
+        // 核心流程 3：呼叫国内阿里云视觉分析节点
         btn.onclick = async function() {
             if (!base64Data) {
-                alert("请先载入校园现场采集照片！");
+                alert("提示：请先在左侧采集仓中载入校园现场图片。");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "⚡ 正在计算特征，请勿切断连接...";
+            btn.innerText = "智能解算中...";
             
-            // 切换报告区的状态 UI
-            placeholderRep.style.display = "none";
+            // 切换为大厂骨架屏加载状态
+            idleState.style.display = "none";
             resultArea.style.display = "none";
-            loadingRep.style.display = "block";
+            skeletonLoading.style.display = "flex";
 
             try {
                 const response = await fetch('/api/check', {
@@ -189,24 +304,23 @@
 
                 const result = await response.json();
 
-                // 切换报告区为文字输出模式
-                loadingRep.style.display = "none";
+                skeletonLoading.style.display = "none";
 
                 if (response.ok && result.content) {
                     resultArea.style.display = "block";
                     startTypingEffect(result.content);
                 } else {
-                    placeholderRep.style.display = "block"; // 切回占位符
-                    alert("⚠️ 错误提示：" + (result.content || "未知技术故障"));
+                    idleState.style.display = "flex";
+                    alert("错误：视觉节点解析异常，请检查后端服务。");
                     btn.disabled = false;
-                    btn.innerText = "重试";
+                    btn.innerText = "启动多模态风险推理";
                 }
             } catch (err) {
-                loadingRep.style.display = "none";
-                placeholderRep.style.display = "block";
-                alert("❌ 无法连接到应急云中转节点，请检查 Deployment 状态。");
+                skeletonLoading.style.display = "none";
+                idleState.style.display = "flex";
+                alert("故障：未能触达云端多模态计算中转节点。");
                 btn.disabled = false;
-                btn.innerText = "重试";
+                btn.innerText = "启动多模态风险推理";
             }
         };
     </script>
