@@ -7,71 +7,85 @@
     <style>
         :root { --primary: #ef4444; --accent: #38bdf8; --bg: #090d16; --card: #141b2d; }
         body { margin:0; padding:0; background: var(--bg); font-family: 'PingFang SC', sans-serif; color:#e2e8f0; }
-        .dashboard { width:95%; max-width:1000px; margin:40px auto; background: var(--card); border: 1px solid #1e293b; padding:30px; border-radius:16px; box-shadow:0 20px 40px rgba(0,0,0,0.7); }
+        .dashboard { width:90%; max-width:850px; margin:40px auto; background: var(--card); border: 1px solid #1e293b; padding:30px; border-radius:16px; box-shadow:0 20px 40px rgba(0,0,0,0.7); box-sizing: border-box; }
         
-        /* 应急专业风车头 */
-        .header { text-align: center; border-bottom: 2px solid #1e293b; padding-bottom: 20px; margin-bottom: 30px; position: relative; }
-        .header h1 { color: var(--primary); margin: 0 0 10px 0; font-size: 28px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(239,68,68,0.3); }
+        .header { text-align: center; border-bottom: 2px solid #1e293b; padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { color: var(--primary); margin: 0 0 10px 0; font-size: 26px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(239,68,68,0.3); }
         .tag { background: rgba(56,189,248,0.1); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 13px; border: 1px solid rgba(56,189,248,0.2); }
         
-        /* 上传区域 */
-        .upload-box { border: 2px dashed #334155; padding: 40px 20px; border-radius: 12px; margin-bottom: 30px; cursor: pointer; transition: 0.3s; text-align: center; background: rgba(15,23,42,0.5); }
+        .upload-box { display: block; border: 2px dashed #334155; padding: 40px 20px; border-radius: 12px; margin-bottom: 30px; cursor: pointer; transition: 0.3s; text-align: center; background: rgba(15,23,42,0.5); position: relative; }
         .upload-box:hover { border-color: var(--accent); background: rgba(56,189,248,0.02); }
-        .upload-box input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+        .upload-box input[type="file"] { position: absolute; width: 100%; height: 100%; top:0; left:0; opacity: 0; cursor: pointer; }
         
-        /* 报警动效按钮 */
+        #preview-img { display: none; max-width: 100%; max-height: 250px; margin: 15px auto 0 auto; border-radius: 8px; border: 1px solid #334155; }
+
         button { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; letter-spacing: 1px; box-shadow: 0 4px 14px rgba(239,68,68,0.4); }
-        button:hover { background: #dc2626; transform: translateY(-1px); }
-        button:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+        button:hover { background: #dc2626; }
+        button:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
         
-        /* 结果展示区（报告排版优化） */
-        #result-area { display: none; margin-top: 30px; animation: fadeIn 0.5s ease; }
-        .report-title { color: var(--accent); font-size: 18px; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-left: 4px solid var(--accent); padding-left: 10px; }
+        #result-area { display: none; margin-top: 30px; }
+        .report-title { color: var(--accent); font-size: 18px; font-weight: bold; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 10px; }
         #result-text { background: #070a12; padding: 25px; border-radius: 8px; border: 1px solid #1e293b; color: #cbd5e1; line-height: 1.8; font-size: 15px; white-space: pre-wrap; min-height: 120px; }
         
         .footer { text-align: center; margin-top: 40px; color: #475569; font-size: 12px; border-top: 1px solid #1e293b; padding-top: 20px; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="dashboard">
         <div class="header">
-            <h1>🚨 校园安全风险 AI 识别与应急预警系统</h1>
-            <span class="tag">应急管理专业 · 数字化隐患排查课题方案</span>
+            <h1>🚨 校园安全风险 AI 真实识别与应急预警系统</h1>
+            <span class="tag">应急管理专业 · 数字化多模态隐患排查方案</span>
         </div>
 
-        <label class="upload-box" id="drop-zone">
+        <label class="upload-box">
             <input type="file" id="file-input" accept="image/*">
-            <div style="font-size: 45px; margin-bottom: 10px;">💾</div>
-            <p id="file-name" style="margin: 5px 0; font-size: 16px;">点击或拖拽上传校园实拍现场照片</p>
-            <p style="font-size: 12px; color: #64748b; margin: 0;">支持消防通道、电力设施、人流密集场所等场景</p>
+            <div id="upload-ui">
+                <div style="font-size: 45px; margin-bottom: 10px;">📸</div>
+                <p id="file-name" style="margin: 5px 0; font-size: 16px;">点击选择或拖拽上传校园实拍现场照片</p>
+                <p style="font-size: 12px; color: #64748b; margin: 0;">支持消防通道、电力设施、人流密集场所等场景</p>
+            </div>
+            <img id="preview-img" src="#" alt="图片预览">
         </label>
 
-        <button id="start-btn">⚠️ 启动 AI 风险态势分析</button>
+        <button id="start-btn">⚠️ 启动 AI 真实画面视觉分析</button>
 
         <div id="result-area">
-            <div class="report-title">📊 应急管理智能评估报告</div>
+            <div class="report-title">📊 应急管理智能视觉评估报告</div>
             <div id="result-text"></div>
         </div>
 
-        <div class="footer">本系统作为数字化应急教学课题演示 · 实时对接大模型数据中转节点</div>
+        <div class="footer">应急管理数字化教学课题演示 · 具备真实计算机视觉(CV)处理能力</div>
     </div>
 
     <script>
         const fileInput = document.getElementById('file-input');
         const fileNameDisplay = document.getElementById('file-name');
+        const previewImg = document.getElementById('preview-img');
+        const uploadUi = document.getElementById('upload-ui');
         const btn = document.getElementById('start-btn');
         const resultArea = document.getElementById('result-area');
         const resultText = document.getElementById('result-text');
 
+        let base64Data = ""; 
+
         fileInput.onchange = function() {
-            if (fileInput.files.length > 0) {
-                fileNameDisplay.innerHTML = `📌 待分析目标已载入：<b style="color:#38bdf8">${fileInput.files[0].name}</b>`;
+            const file = fileInput.files[0];
+            if (file) {
+                fileNameDisplay.innerHTML = `📌 待分析目标已载入：<b style="color:#38bdf8">${file.name}</b>`;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = "block";
+                    uploadUi.style.display = "none";
+                    // 核心：强力提取干净的 base64 字符串
+                    base64Data = e.target.result.split(',')[1];
+                };
+                reader.readAsDataURL(file);
             }
         };
 
-        // 模拟打字机动态输出
         function startTypingEffect(text) {
             let i = 0;
             resultText.innerText = "";
@@ -81,27 +95,29 @@
                 if (i >= text.length) {
                     clearInterval(timer);
                     btn.disabled = false;
-                    btn.innerText = "重新分析新场景";
+                    btn.innerText = "重新分析新图片";
                 }
             }, 10);
         }
 
         btn.onclick = async function() {
-            if (fileInput.files.length === 0) {
-                alert("请先上传一张需要进行安全评估的校园照片！");
+            if (!base64Data) {
+                alert("请先上传一张校园现场照片！");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "⚡ 正在解算图像特征并评估风险指数...";
+            btn.innerText = "⚡ 正在解算真实画面特征并评估风险指数...";
+            resultArea.style.with = "100%";
             resultArea.style.display = "block";
-            resultText.innerText = "🕵️‍♂️ 正在分析风险点，编制安全防范方案...";
+            resultText.innerText = "🕵️‍♂️ 正在传输图像并呼叫国内大模型多模态视觉节点...";
 
             try {
-                // 💡 使用强绑定的相对路径，Vercel 内部会自己打通，绝不报 405
+                // 💡 强行用标准 JSON 格式打包图片流发送
                 const response = await fetch('/api/check', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: base64Data })
                 });
 
                 const result = await response.json();
@@ -109,12 +125,12 @@
                 if (response.ok && result.content) {
                     startTypingEffect(result.content);
                 } else {
-                    resultText.innerText = "❌ 错误提示：" + (result.content || "未知技术故障");
+                    resultText.innerText = "❌ 错误提示：" + (result.content || "未知故障");
                     btn.disabled = false;
-                    btn.innerText = "重新重试";
+                    btn.innerText = "重试";
                 }
             } catch (err) {
-                resultText.innerText = "❌ 无法连接到应急云中转节点，请检查 Vercel 的 Deployment 是否为 Ready 状态。";
+                resultText.innerText = "❌ 无法连接到应急云中转节点，请检查网络。";
                 btn.disabled = false;
                 btn.innerText = "重试";
             }
