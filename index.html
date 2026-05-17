@@ -3,253 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>校园安全风险AI全真视觉识别与智能应急决策系统</title>
+    <title>校园安全 AI 视觉中心</title>
     <style>
         :root {
-            --bg: #0b0f19; /* 深钛灰色背景，大厂数字孪生系统标准底色 */
-            --panel: #111827; /* 晶体暗卡片颜色 */
-            --panel-header: #1f2937; /* 卡片头部清爽分栏 */
-            --border: rgba(255, 255, 255, 0.05); /* 极细微光边框 */
-            --border-hover: rgba(56, 189, 248, 0.3); /* 鼠标悬停时的科技蓝微光 */
-            --accent-blue: #0284c7; /* 极客深邃蓝：主动作键 */
-            --accent-blue-hover: #0369a1;
-            --accent-orange: #f59e0b; /* 预警琥珀橙：应急管理专业标准提示色 */
-            --text-main: #f3f4f6; /* 柔和白，长时间观看眼不瞎 */
-            --text-muted: #9ca3af; /* 灰白文字 */
+            /* 苹果官网标志性配色 */
+            --bg: #f5f5f7; /* 苹果经典的浅暖灰背景 */
+            --panel: #ffffff; /* 纯白卡片 */
+            --header-bg: rgba(245, 245, 247, 0.7); /* 毛玻璃导航背景 */
+            --accent-blue: #0071e3; /* 苹果标准蓝色 */
+            --accent-red: #ff3b30; /* 苹果标准红色 (用于警报) */
+            --text-main: #1d1d1f; /* 苹果字体主要颜色：深碳黑 */
+            --text-secondary: #86868b; /* 苹果次要文字颜色：灰色 */
+            --border: #d2d2d7; /* 极浅的分隔线颜色 */
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.04); /* 苹果式极轻投影 */
         }
 
         body {
             margin: 0; padding: 0; background: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
             color: var(--text-main); -webkit-font-smoothing: antialiased;
             min-height: 100vh; display: flex; flex-direction: column;
         }
 
-        /* 响应式黄金双栏布局 */
-        .app-container {
-            width: 100%; max-width: 1300px; margin: 0 auto; padding: 32px 20px;
-            box-sizing: border-box; display: flex; flex-direction: column; gap: 24px; flex: 1;
-        }
-
-        /* 大厂扁平化极简导航 */
+        /* 顶部导航：Apple 毛玻璃风格 */
         .app-header {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 0.5px solid var(--border); padding: 16px 0;
+        }
+        .header-content {
+            width: 92%; max-width: 1200px; margin: 0 auto;
             display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid var(--border); padding-bottom: 20px;
         }
-        .app-header .brand {
-            display: flex; align-items: center; gap: 12px;
+        .header-content h1 {
+            margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.5px;
         }
-        .app-header .brand-indicator {
-            width: 6px; height: 6px; background: var(--accent-orange); border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-orange); animation: statusPulse 2s infinite;
+        .status-dot {
+            display: inline-block; width: 8px; height: 8px; background: #34c759; /* 苹果健康绿 */
+            border-radius: 50%; margin-right: 6px;
         }
-        .app-header h1 {
-            margin: 0; font-size: 16px; font-weight: 600; letter-spacing: 2px;
-            color: var(--text-main);
+        .status-text { font-size: 13px; color: var(--text-secondary); font-weight: 400; }
+
+        /* 主容器布局 */
+        .app-container {
+            width: 92%; max-width: 1200px; margin: 40px auto;
+            display: grid; grid-template-columns: 1fr; gap: 30px; flex: 1;
         }
-        .app-header .system-status {
-            font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;
+        @media (min-width: 900px) {
+            .app-container { grid-template-columns: 380px 1fr; }
         }
 
-        /* 主工作区 Bento 现代网格布局 */
-        .workbench-grid {
-            display: grid; grid-template-columns: 1fr; gap: 24px; flex: 1;
-        }
-        @media (min-width: 960px) {
-            .workbench-grid { grid-template-columns: 400px 1fr; }
-        }
-
-        /* 晶体质感卡片面板 */
-        .glass-panel {
-            background: var(--panel); border: 1px solid var(--border);
-            border-radius: 12px; padding: 0; display: flex; flex-direction: column;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); overflow: hidden; transition: border 0.3s ease;
-        }
-        .panel-inner {
-            padding: 24px; display: flex; flex-direction: column; flex: 1;
+        /* 苹果风悬浮卡片 */
+        .apple-card {
+            background: var(--panel); border-radius: 20px; padding: 32px;
+            box-shadow: var(--shadow); border: 0.5px solid rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; box-sizing: border-box;
         }
 
-        /* 卡片内部分块标题 */
-        .panel-caption {
-            font-size: 12px; font-weight: 600; color: var(--text-muted);
-            letter-spacing: 1.5px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
-            border-left: 3px solid var(--accent-blue); padding-left: 8px;
+        .card-title {
+            font-size: 13px; font-weight: 600; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 24px;
         }
 
-        /* 隐藏式全真图片采集窗 */
-        .capture-viewport {
-            width: 100%; height: 260px; position: relative; border: 1px dashed rgba(255,255,255,0.1);
-            border-radius: 8px; background: rgba(0, 0, 0, 0.15); transition: all 0.3s ease;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;
+        /* 图片上传区：更加克制、简洁 */
+        .upload-viewport {
+            width: 100%; height: 280px; position: relative;
+            background: #fbfbfd; border: 1px solid var(--border);
+            border-radius: 14px; overflow: hidden; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
         }
-        .capture-viewport:hover {
-            border-color: var(--border-hover); background: rgba(255, 255, 255, 0.01);
-        }
-        .capture-viewport input[type="file"] {
+        .upload-viewport:hover { background: #f5f5f7; border-color: #afafb6; }
+        .upload-viewport input[type="file"] {
             position: absolute; width: 100%; height: 100%; top:0; left:0; opacity: 0; cursor: pointer; z-index: 10;
         }
-        
         #preview-img {
-            width: 100%; height: 100%; object-fit: contain; display: none;
-            position: relative; z-index: 5; background: #000;
+            width: 100%; height: 100%; object-fit: contain; display: none; z-index: 5;
         }
+        .upload-icon-ui { text-align: center; color: var(--text-secondary); }
+        .upload-icon-ui .icon { font-size: 32px; margin-bottom: 12px; display: block; opacity: 0.6; }
 
-        /* 极简无土气准心引导 */
-        .viewport-guide {
-            text-align: center; pointer-events: none; transition: opacity 0.3s ease;
-        }
-        .viewport-guide .crosshair {
-            width: 24px; height: 24px; border: 1px solid var(--text-muted); opacity: 0.2;
-            margin: 0 auto 16px auto; position: relative;
-        }
-        .viewport-guide .crosshair::before, .viewport-guide .crosshair::after {
-            content: ''; position: absolute; background: var(--text-muted);
-        }
-        .viewport-guide .crosshair::before { top: 50%; left: 3px; right: 3px; height: 1px; }
-        .viewport-guide .crosshair::after { left: 50%; top: 3px; bottom: 3px; width: 1px; }
-        .viewport-guide p { margin: 4px 0; font-size: 13px; color: var(--text-muted); }
-
-        /* 扁平微光工业控制键 */
-        .btn-execution {
+        /* 苹果标准蓝色按钮 */
+        .apple-btn {
             background: var(--accent-blue); color: #fff; border: none;
-            padding: 14px; border-radius: 6px; font-size: 14px; font-weight: 500; letter-spacing: 1px;
-            cursor: pointer; width: 100%; margin-top: auto; transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+            padding: 14px 20px; border-radius: 12px; font-size: 15px; font-weight: 500;
+            cursor: pointer; width: 100%; margin-top: 24px; transition: all 0.2s ease;
         }
-        .btn-execution:hover {
-            background: var(--accent-blue-hover);
-        }
-        .btn-execution:disabled {
-            background: #1f2937; color: var(--text-muted); cursor: not-allowed; box-shadow: none;
-        }
+        .apple-btn:hover { background: #0077ed; transform: scale(1.01); }
+        .apple-btn:active { transform: scale(0.98); opacity: 0.9; }
+        .apple-btn:disabled { background: #e5e5ea; color: #a1a1a6; cursor: not-allowed; transform: none; }
 
-        /* 右侧决策展示面板 */
-        .deduction-display {
-            flex: 1; display: flex; flex-direction: column; min-height: 480px;
+        /* 右侧内容展示区 */
+        .content-display { min-height: 500px; position: relative; }
+        #idle-msg {
+            margin: auto; text-align: center; color: var(--text-secondary);
         }
+        #idle-msg h3 { font-size: 22px; color: #d2d2d7; font-weight: 600; margin: 0; }
 
-        /* 大厂同款骨架屏动态解算特效 */
-        .skeleton-wrapper {
-            display: none; flex-direction: column; gap: 14px; width: 100%; padding-top: 4px;
-        }
-        .skeleton-line {
-            height: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 3px; position: relative; overflow: hidden;
-        }
-        .skeleton-line::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            animation: skeletonShimmer 1.5s infinite;
-        }
-
-        /* 决策报告高级文本渲染区 */
-        #result-area {
-            display: none; flex: 1; width: 100%;
-        }
+        /* 苹果风报告排版 */
         #result-text {
-            color: rgba(243, 244, 246, 0.95); line-height: 1.8; font-size: 14.5px;
-            white-space: pre-wrap; font-family: -apple-system, sans-serif;
+            color: var(--text-main); line-height: 1.7; font-size: 16px;
+            white-space: pre-wrap; font-weight: 400;
         }
+        #result-text strong { font-weight: 600; color: #000; }
 
-        /* 静态待命展示状态 */
-        #idle-state {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            flex: 1; color: var(--text-muted); font-size: 13px; text-align: center; gap: 8px;
-        }
-
-        /* 呼吸与扫描动画 */
-        @keyframes skeletonShimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        @keyframes statusPulse {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-        }
+        /* 加载动效：极其轻微的呼吸感 */
+        .loading-dots { display: none; margin: 20px 0; color: var(--text-secondary); font-size: 14px; }
+        .dot-pulse { animation: dotPulse 1.5s infinite ease-in-out; }
+        @keyframes dotPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
         .footer {
-            margin-top: auto; border-top: 1px solid var(--border); padding-top: 20px;
-            text-align: center; color: var(--text-muted); font-size: 11px; letter-spacing: 0.5px;
+            padding: 40px 0; text-align: center; color: var(--text-secondary);
+            font-size: 12px; font-weight: 400;
         }
     </style>
 </head>
 <body>
 
+    <header class="app-header">
+        <div class="header-content">
+            <h1>校园安全 AI 视觉中心</h1>
+            <div class="status">
+                <span class="status-dot"></span>
+                <span class="status-text">视觉识别节点已就绪</span>
+            </div>
+        </div>
+    </header>
+
     <div class="app-container">
         
-        <header class="app-header">
-            <div class="brand">
-                <div class="brand-indicator"></div>
-                <h1>校园安全风险 AI 视觉解析与决策系统</h1>
+        <aside class="apple-card">
+            <div class="card-title">视觉载入</div>
+            <div class="upload-viewport">
+                <input type="file" id="file-input" accept="image/*">
+                <div class="upload-icon-ui" id="ui-placeholder">
+                    <span class="icon">📷</span>
+                    <div style="font-size: 14px; font-weight: 500;">选取现场照片</div>
+                    <div style="font-size: 12px; margin-top: 4px; opacity: 0.8;">支持拖拽或点击上传</div>
+                </div>
+                <img id="preview-img" src="#" alt="预览图片">
             </div>
-            <div class="system-status">当前节点 // 智能视觉分析就绪</div>
-        </header>
-
-        <div class="workbench-grid">
             
-            <section class="glass-panel">
-                <div class="panel-inner">
-                    <div class="panel-caption">01 / 现场画面采集仓</div>
-                    
-                    <div class="capture-viewport">
-                        <input type="file" id="file-input" accept="image/*">
-                        <div class="viewport-guide" id="placeholder-ui">
-                            <div class="crosshair"></div>
-                            <p>载入实物图像流</p>
-                            <p style="font-size: 11px; opacity: 0.5;">点击或将校园现场照片拖拽至此</p>
-                        </div>
-                        <img id="preview-img" src="#" alt="解算流数据预览">
-                    </div>
-                    
-                    <button class="btn-execution" id="start-btn" style="margin-top: 24px;">启动多模态风险推理</button>
-                </div>
-            </section>
+            <button class="apple-btn" id="start-btn">开始分析报告</button>
+        </aside>
+        
+        <main class="apple-card content-display">
+            <div class="card-title">隐患评估推演</div>
             
-            <section class="glass-panel deduction-display">
-                <div class="panel-inner" style="flex: 1; display: flex; flex-direction: column;">
-                    <div class="panel-caption">02 / AI 智能风险解算中心</div>
-                    
-                    <div id="idle-state">
-                        <div style="font-weight: 400; opacity: 0.6; font-size: 14px;">等待接收图像数据</div>
-                        <div style="font-size: 12px; opacity: 0.4;">请在左侧面板载入现场图像后触发智能解算</div>
-                    </div>
-                    
-                    <div class="skeleton-wrapper" id="skeleton-loading">
-                        <div class="skeleton-line" style="width: 30%"></div>
-                        <div class="skeleton-line" style="width: 85%; margin-top: 10px;"></div>
-                        <div class="skeleton-line" style="width: 90%"></div>
-                        <div class="skeleton-line" style="width: 65%"></div>
-                        <div class="skeleton-line" style="width: 45%; margin-top: 10px;"></div>
-                        <div class="skeleton-line" style="width: 75%"></div>
-                    </div>
+            <div id="idle-msg">
+                <h3>分析就绪</h3>
+                <p style="font-size: 14px;">请在左侧载入照片并点击开始分析</p>
+            </div>
 
-                    <div id="result-area">
-                        <div id="result-text"></div>
-                    </div>
-                </div>
-            </section>
+            <div class="loading-dots" id="loading-ui">
+                <span class="dot-pulse">正在解析图像特征并生成专业建议...</span>
+            </div>
 
-        </div>
+            <div id="result-area" style="display: none;">
+                <div id="result-text"></div>
+            </div>
+        </main>
 
-        <footer class="footer">
-            应急管理数字化课题演示系统 // 具备全真多模态 CV 隐患排查能力
-        </footer>
     </div>
+
+    <footer class="footer">
+        © 2024 应急管理课题演示系统 · 高级多模态视觉解算引擎
+    </footer>
 
     <script>
         const fileInput = document.getElementById('file-input');
         const previewImg = document.getElementById('preview-img');
-        const placeholderUi = document.getElementById('placeholder-ui');
+        const uiPlaceholder = document.getElementById('ui-placeholder');
         const btn = document.getElementById('start-btn');
         
-        const idleState = document.getElementById('idle-state');
-        const skeletonLoading = document.getElementById('skeleton-loading');
+        const idleMsg = document.getElementById('idle-msg');
+        const loadingUi = document.getElementById('loading-ui');
         const resultArea = document.getElementById('result-area');
         const resultText = document.getElementById('result-text');
 
         let base64Data = ""; 
 
-        // 核心流程 1：捕获图片预览 (和现在一样)
+        // 核心流程 1：载入预览
         fileInput.onchange = function() {
             const file = fileInput.files[0];
             if (file) {
@@ -257,15 +190,14 @@
                 reader.onload = function(e) {
                     previewImg.src = e.target.result;
                     previewImg.style.display = "block";
-                    placeholderUi.style.opacity = "0";
-                    setTimeout(() => { placeholderUi.style.display = "none"; }, 200);
+                    uiPlaceholder.style.display = "none";
                     base64Data = e.target.result.split(',')[1];
                 };
                 reader.readAsDataURL(file);
             }
         };
 
-        // 核心流程 2：流畅打字机动效
+        // 核心流程 2：顺滑打字效果
         function startTypingEffect(text) {
             let i = 0;
             resultText.innerText = "";
@@ -275,25 +207,24 @@
                 if (i >= text.length) {
                     clearInterval(timer);
                     btn.disabled = false;
-                    btn.innerText = "重新执行风险推理";
+                    btn.innerText = "开始分析报告";
                 }
-            }, 6); 
+            }, 12); 
         }
 
-        // 核心流程 3：呼叫国内阿里云视觉分析节点
+        // 核心流程 3：提交分析
         btn.onclick = async function() {
             if (!base64Data) {
-                alert("提示：请先在左侧采集仓中载入校园现场图片。");
+                alert("请先载入现场采集照片。");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "智能解算中...";
+            btn.innerText = "正在分析...";
             
-            // 切换为大厂骨架屏加载状态
-            idleState.style.display = "none";
+            idleMsg.style.display = "none";
             resultArea.style.display = "none";
-            skeletonLoading.style.display = "flex";
+            loadingUi.style.display = "block";
 
             try {
                 const response = await fetch('/api/check', {
@@ -304,23 +235,23 @@
 
                 const result = await response.json();
 
-                skeletonLoading.style.display = "none";
+                loadingUi.style.display = "none";
 
                 if (response.ok && result.content) {
                     resultArea.style.display = "block";
                     startTypingEffect(result.content);
                 } else {
-                    idleState.style.display = "flex";
-                    alert("错误：视觉节点解析异常，请检查后端服务。");
+                    idleMsg.style.display = "block";
+                    alert("错误：未能成功解析图片，请检查后台配置。");
                     btn.disabled = false;
-                    btn.innerText = "启动多模态风险推理";
+                    btn.innerText = "开始分析报告";
                 }
             } catch (err) {
-                skeletonLoading.style.display = "none";
-                idleState.style.display = "flex";
-                alert("故障：未能触达云端多模态计算中转节点。");
+                loadingUi.style.display = "none";
+                idleMsg.style.display = "block";
+                alert("连接故障：无法触达 AI 解算节点。");
                 btn.disabled = false;
-                btn.innerText = "启动多模态风险推理";
+                btn.innerText = "开始分析报告";
             }
         };
     </script>
